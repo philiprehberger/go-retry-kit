@@ -32,6 +32,12 @@ data, err := retrykit.Do(ctx, fetchData,
     retrykit.WithRetryOn(func(err error) bool {
         return errors.Is(err, ErrTemporary)
     }),
+    retrykit.WithOnSuccess(func(attempt int) {
+        log.Printf("succeeded on attempt %d", attempt)
+    }),
+    retrykit.WithOnFailure(func(err error, attempts int) {
+        log.Printf("all %d attempts failed: %v", attempts, err)
+    }),
 )
 ```
 

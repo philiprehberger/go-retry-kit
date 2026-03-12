@@ -80,6 +80,16 @@ func WithOnRetry(fn func(error, int)) Option {
 	return func(o *Options) { o.OnRetry = fn }
 }
 
+// WithOnSuccess sets a callback invoked when the operation succeeds.
+func WithOnSuccess(fn func(attempt int)) Option {
+	return func(o *Options) { o.OnSuccess = fn }
+}
+
+// WithOnFailure sets a callback invoked when all attempts have been exhausted.
+func WithOnFailure(fn func(err error, attempts int)) Option {
+	return func(o *Options) { o.OnFailure = fn }
+}
+
 // RetryError is returned when all attempts have been exhausted.
 type RetryError struct {
 	Attempts int
@@ -121,6 +131,16 @@ func Do[T any](ctx context.Context, fn func(ctx context.Context) (T, error), opt
 	cfg := DefaultOptions()
 	for _, opt := range opts {
 		opt(&cfg)
+	}
+
+	if cfg.MaxAttempts < 1 {
+		cfg.MaxAttempts = 1
+	}
+	if cfg.InitialDelay < 0 {
+		cfg.InitialDelay = 0
+	}
+	if cfg.MaxDelay < cfg.InitialDelay {
+		cfg.MaxDelay = cfg.InitialDelay
 	}
 
 	var lastErr error
