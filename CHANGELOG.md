@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.0
+
+- Add `CircuitBreaker.Reset()` to manually reset to Closed state
+- Add input validation for `NewCircuitBreaker` (clamp threshold, timeout, max attempts)
+
 ## 0.2.1
 
 - Fix exponential backoff overflow at high attempt counts

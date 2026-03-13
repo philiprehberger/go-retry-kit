@@ -63,6 +63,9 @@ cb := retrykit.NewCircuitBreaker(
 result, err := retrykit.Call(cb, func() (string, error) {
     return fetchData()
 })
+
+// Manually reset the circuit breaker
+cb.Reset()
 ```
 
 ## License

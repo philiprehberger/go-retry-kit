@@ -175,6 +175,70 @@ func TestCircuitBreakerString(t *testing.T) {
 	}
 }
 
+func TestCircuitBreakerReset(t *testing.T) {
+	cb := NewCircuitBreaker(WithFailureThreshold(2))
+
+	// Trip the breaker
+	for i := 0; i < 2; i++ {
+		Call(cb, func() (int, error) { return 0, errCB })
+	}
+	if cb.State() != Open {
+		t.Fatalf("expected Open, got %v", cb.State())
+	}
+
+	// Reset manually
+	cb.Reset()
+	if cb.State() != Closed {
+		t.Fatalf("expected Closed after Reset, got %v", cb.State())
+	}
+
+	// Should work normally again
+	result, err := Call(cb, func() (string, error) { return "ok", nil })
+	if err != nil {
+		t.Fatalf("unexpected error after Reset: %v", err)
+	}
+	if result != "ok" {
+		t.Fatalf("expected 'ok', got %q", result)
+	}
+}
+
+func TestCircuitBreakerResetFromHalfOpen(t *testing.T) {
+	cb := NewCircuitBreaker(
+		WithFailureThreshold(2),
+		WithResetTimeout(50*time.Millisecond),
+	)
+	for i := 0; i < 2; i++ {
+		Call(cb, func() (int, error) { return 0, errCB })
+	}
+	time.Sleep(60 * time.Millisecond)
+
+	// Trigger half-open by calling
+	Call(cb, func() (int, error) { return 0, errCB })
+
+	cb.Reset()
+	if cb.State() != Closed {
+		t.Fatalf("expected Closed after Reset from re-opened, got %v", cb.State())
+	}
+}
+
+func TestCircuitBreakerInputValidation(t *testing.T) {
+	cb := NewCircuitBreaker(
+		WithFailureThreshold(0),
+		WithResetTimeout(-time.Second),
+		WithHalfOpenMaxAttempts(-1),
+	)
+	// Should clamp to safe values
+	if cb.failureThreshold < 1 {
+		t.Fatalf("expected failureThreshold >= 1, got %d", cb.failureThreshold)
+	}
+	if cb.resetTimeout < 0 {
+		t.Fatalf("expected resetTimeout >= 0, got %v", cb.resetTimeout)
+	}
+	if cb.halfOpenMaxAttempts < 1 {
+		t.Fatalf("expected halfOpenMaxAttempts >= 1, got %d", cb.halfOpenMaxAttempts)
+	}
+}
+
 func TestCircuitStateString(t *testing.T) {
 	if Closed.String() != "closed" {
 		t.Errorf("expected 'closed', got %q", Closed.String())

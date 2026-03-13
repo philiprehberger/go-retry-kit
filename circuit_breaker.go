@@ -89,6 +89,15 @@ func NewCircuitBreaker(opts ...CircuitBreakerOption) *CircuitBreaker {
 	for _, opt := range opts {
 		opt(cb)
 	}
+	if cb.failureThreshold < 1 {
+		cb.failureThreshold = 1
+	}
+	if cb.resetTimeout < 0 {
+		cb.resetTimeout = 0
+	}
+	if cb.halfOpenMaxAttempts < 1 {
+		cb.halfOpenMaxAttempts = 1
+	}
 	return cb
 }
 
@@ -97,6 +106,15 @@ func (cb *CircuitBreaker) State() CircuitState {
 	cb.mu.Lock()
 	defer cb.mu.Unlock()
 	return cb.state
+}
+
+// Reset manually resets the circuit breaker to the Closed state with zero failures.
+func (cb *CircuitBreaker) Reset() {
+	cb.mu.Lock()
+	defer cb.mu.Unlock()
+	cb.transition(Closed)
+	cb.failures = 0
+	cb.halfOpenAttempts = 0
 }
 
 func (cb *CircuitBreaker) transition(to CircuitState) {
