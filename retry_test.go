@@ -226,6 +226,55 @@ func TestPresets(t *testing.T) {
 	}
 }
 
+func TestRetryErrorUnwrap(t *testing.T) {
+	_, err := Do(context.Background(), func(ctx context.Context) (int, error) {
+		return 0, errTest
+	}, WithMaxAttempts(1), WithInitialDelay(time.Millisecond))
+
+	if !errors.Is(err, errTest) {
+		t.Fatal("expected errors.Is to find errTest through Unwrap chain")
+	}
+
+	var retryErr *RetryError
+	if !errors.As(err, &retryErr) {
+		t.Fatal("expected errors.As to find RetryError")
+	}
+	if retryErr.Last != errTest {
+		t.Fatal("expected Last to be errTest")
+	}
+}
+
+func TestJitterBounds(t *testing.T) {
+	opts := Options{
+		InitialDelay: 100 * time.Millisecond,
+		MaxDelay:     10 * time.Second,
+		Backoff:      Fixed,
+		Jitter:       true,
+	}
+
+	for i := 0; i < 100; i++ {
+		d := calculateDelay(1, opts)
+		// Jitter formula: delay * (0.5 + rand*0.5), so range is [50ms, 100ms)
+		if d < 50*time.Millisecond || d >= 100*time.Millisecond {
+			t.Fatalf("jitter delay %v out of expected range [50ms, 100ms)", d)
+		}
+	}
+}
+
+func TestExponentialBackoffLargeAttemptCapped(t *testing.T) {
+	opts := Options{
+		InitialDelay: time.Millisecond,
+		MaxDelay:     time.Second,
+		Backoff:      Exponential,
+		Jitter:       false,
+	}
+
+	d := calculateDelay(50, opts) // 2^49 ms would be huge
+	if d != time.Second {
+		t.Fatalf("expected delay capped at 1s for large attempt, got %v", d)
+	}
+}
+
 func TestCalculateDelay(t *testing.T) {
 	opts := Options{
 		InitialDelay: 100 * time.Millisecond,

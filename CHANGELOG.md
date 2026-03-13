@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.1
+
+- Fix exponential backoff overflow at high attempt counts
+- Add tests for `RetryError.Unwrap()` chain
+- Add jitter bounds validation test
+
 ## 0.2.0
 
 - Add `WithOnSuccess` and `WithOnFailure` option setters

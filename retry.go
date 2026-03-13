@@ -108,7 +108,12 @@ func calculateDelay(attempt int, opts Options) time.Duration {
 	var delay time.Duration
 	switch opts.Backoff {
 	case Exponential:
-		delay = opts.InitialDelay * time.Duration(math.Pow(2, float64(attempt-1)))
+		exp := math.Pow(2, float64(attempt-1))
+		if exp > float64(opts.MaxDelay/opts.InitialDelay) {
+			delay = opts.MaxDelay
+		} else {
+			delay = opts.InitialDelay * time.Duration(exp)
+		}
 	case Linear:
 		delay = opts.InitialDelay * time.Duration(attempt)
 	default:
