@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1
+
+- Add badges and Development section to README
+
 ## 0.3.0
 
 - Add `CircuitBreaker.Reset()` to manually reset to Closed state
