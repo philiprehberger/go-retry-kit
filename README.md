@@ -4,7 +4,7 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/philiprehberger/go-retry-kit.svg)](https://pkg.go.dev/github.com/philiprehberger/go-retry-kit)
 [![License](https://img.shields.io/github/license/philiprehberger/go-retry-kit)](LICENSE)
 
-Retry with exponential backoff, circuit breaker, and context cancellation for Go.
+Retry with exponential backoff, circuit breaker, and context cancellation for Go
 
 ## Installation
 
@@ -71,6 +71,48 @@ result, err := retrykit.Call(cb, func() (string, error) {
 // Manually reset the circuit breaker
 cb.Reset()
 ```
+
+## API
+
+| Function / Method | Description |
+|---|---|
+| `Backoff` | Backoff strategy type (Exponential, Linear, Fixed) |
+| `Options` | Struct configuring retry behavior |
+| `Option` | Functional option for configuring retries |
+| `DefaultOptions() Options` | Return sensible default retry options |
+| `Do[T](ctx, fn, opts ...Option) (T, error)` | Execute fn with retry logic |
+| `WithMaxAttempts(n int) Option` | Set maximum number of attempts |
+| `WithBackoff(b Backoff) Option` | Set the backoff strategy |
+| `WithInitialDelay(d time.Duration) Option` | Set initial delay between retries |
+| `WithMaxDelay(d time.Duration) Option` | Set maximum delay between retries |
+| `WithJitter(j bool) Option` | Enable or disable jitter |
+| `WithRetryOn(fn func(error) bool) Option` | Filter which errors trigger retries |
+| `WithOnRetry(fn func(error, int)) Option` | Set callback invoked before each retry |
+| `WithOnSuccess(fn func(int)) Option` | Set callback invoked on success |
+| `WithOnFailure(fn func(error, int)) Option` | Set callback invoked when all attempts fail |
+| `Aggressive() []Option` | Preset: 5 attempts, fast exponential backoff |
+| `Gentle() []Option` | Preset: 3 attempts, slow exponential backoff |
+| `NetworkRequest() []Option` | Preset: tuned for network requests |
+| `DatabaseQuery() []Option` | Preset: tuned for database queries |
+| `RetryError` | Error returned when all attempts are exhausted |
+| `(*RetryError) Error() string` | Format the retry error message |
+| `(*RetryError) Unwrap() error` | Return the last underlying error |
+| `CircuitState` | Circuit breaker state (Closed, Open, HalfOpen) |
+| `(CircuitState) String() string` | Human-readable state name |
+| `CircuitBreaker` | Circuit breaker implementation |
+| `CircuitBreakerOption` | Functional option for configuring circuit breaker |
+| `NewCircuitBreaker(opts ...CircuitBreakerOption) *CircuitBreaker` | Create a new circuit breaker |
+| `(*CircuitBreaker) State() CircuitState` | Return the current circuit state |
+| `(*CircuitBreaker) Reset()` | Manually reset to Closed state |
+| `(*CircuitBreaker) String() string` | Human-readable breaker description |
+| `Call[T](cb *CircuitBreaker, fn func() (T, error)) (T, error)` | Execute fn through the circuit breaker |
+| `WithFailureThreshold(n int) CircuitBreakerOption` | Set failures before opening the circuit |
+| `WithResetTimeout(d time.Duration) CircuitBreakerOption` | Set open-to-half-open timeout |
+| `WithHalfOpenMaxAttempts(n int) CircuitBreakerOption` | Set max attempts in half-open state |
+| `WithOnStateChange(fn) CircuitBreakerOption` | Set callback for state transitions |
+| `WithOnCircuitOpen(fn func(int)) CircuitBreakerOption` | Set callback when circuit opens |
+| `CircuitOpenError` | Error returned when circuit is open |
+| `(*CircuitOpenError) Error() string` | Format the circuit open error |
 
 ## Development
 
