@@ -1,6 +1,6 @@
 # go-retry-kit
 
-[![CI](https://github.com/philiprehberger/go-retry-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/philiprehberger/go-retry-kit/actions/workflows/ci.yml) [![Go Reference](https://pkg.go.dev/badge/github.com/philiprehberger/go-retry-kit.svg)](https://pkg.go.dev/github.com/philiprehberger/go-retry-kit) [![License](https://img.shields.io/github/license/philiprehberger/go-retry-kit)](LICENSE)
+[![CI](https://github.com/philiprehberger/go-retry-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/philiprehberger/go-retry-kit/actions/workflows/ci.yml) [![Go Reference](https://pkg.go.dev/badge/github.com/philiprehberger/go-retry-kit.svg)](https://pkg.go.dev/github.com/philiprehberger/go-retry-kit) [![License](https://img.shields.io/github/license/philiprehberger/go-retry-kit)](LICENSE) [![Sponsor](https://img.shields.io/badge/sponsor-GitHub%20Sponsors-ec6cb9)](https://github.com/sponsors/philiprehberger)
 
 Retry with exponential backoff, circuit breaker, and context cancellation for Go
 
