@@ -1,6 +1,8 @@
 # go-retry-kit
 
-[![CI](https://github.com/philiprehberger/go-retry-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/philiprehberger/go-retry-kit/actions/workflows/ci.yml) [![Go Reference](https://pkg.go.dev/badge/github.com/philiprehberger/go-retry-kit.svg)](https://pkg.go.dev/github.com/philiprehberger/go-retry-kit) [![License](https://img.shields.io/github/license/philiprehberger/go-retry-kit)](LICENSE) [![Sponsor](https://img.shields.io/badge/sponsor-GitHub%20Sponsors-ec6cb9)](https://github.com/sponsors/philiprehberger)
+[![CI](https://github.com/philiprehberger/go-retry-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/philiprehberger/go-retry-kit/actions/workflows/ci.yml)
+[![Go Reference](https://pkg.go.dev/badge/github.com/philiprehberger/go-retry-kit.svg)](https://pkg.go.dev/github.com/philiprehberger/go-retry-kit)
+[![Last updated](https://img.shields.io/github/last-commit/philiprehberger/go-retry-kit)](https://github.com/philiprehberger/go-retry-kit/commits/main)
 
 Retry with exponential backoff, circuit breaker, and context cancellation for Go
 
@@ -119,6 +121,24 @@ go test ./...
 go vet ./...
 ```
 
+## Support
+
+If you find this project useful:
+
+⭐ [Star the repo](https://github.com/philiprehberger/go-retry-kit)
+
+🐛 [Report issues](https://github.com/philiprehberger/go-retry-kit/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
+
+💡 [Suggest features](https://github.com/philiprehberger/go-retry-kit/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement)
+
+❤️ [Sponsor development](https://github.com/sponsors/philiprehberger)
+
+🌐 [All Open Source Projects](https://philiprehberger.com/open-source-packages)
+
+💻 [GitHub Profile](https://github.com/philiprehberger)
+
+🔗 [LinkedIn Profile](https://www.linkedin.com/in/philiprehberger)
+
 ## License
 
-MIT
+[MIT](LICENSE)
